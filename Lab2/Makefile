@@ -1,14 +1,16 @@
-SRCNAME=fib
+BINNAME=fib
+SRCNAME=$(BINNAME).s
+OBJNAME=$(BINNAME).o
 
 clean:
-	rm -rf $(SRCNAME).o $(SRCNAME) 
+	rm -rf $(OBJNAME) $(BINNAME) 
 
-$(SRCNAME)_obj: $(SRCNAME).s
-	as $< -o $(SRCNAME).o
+$(OBJNAME): clean $(SRCNAME)
+	as $(word 2, $^) -o $@
 
-$(SRCNAME): $(SRCNAME).o
-	ld $^ -o $(SRCNAME)
-	rm -rf $(SRCNAME).o
+$(BINNAME): $(OBJNAME)
+	ld $^ -o $@
+	rm -rf $^
 
-run: clean $(SRCNAME)
-	./fib
+run: $(BINNAME)
+	./$^
